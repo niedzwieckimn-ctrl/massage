@@ -1,20 +1,17 @@
 {
   "name": "massage-spa",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma migrate deploy && next build",
-    "start": "next start"
+    "build": "next build",
+    "start": "next start -p 3000"
   },
   "dependencies": {
     "next": "14.2.12",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "prisma": "5.16.1",
-    "@prisma/client": "5.16.1",
-    "tailwindcss": "3.4.10",
-    "postcss": "8.4.41",
-    "autoprefixer": "10.4.19"
+    "@prisma/client": "5.16.1"
   }
 }
