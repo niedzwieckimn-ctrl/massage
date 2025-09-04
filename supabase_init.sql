@@ -1,5 +1,4 @@
--- Uruchom w Supabase → SQL Editor
-create type "BookingStatus" as enum ('PENDING','CONFIRMED','CANCELLED');
+create type if not exists "Status" as enum ('PENDING','CONFIRMED','CANCELLED');
 
 create table if not exists "Service"(
   id serial primary key,
@@ -12,9 +11,17 @@ create table if not exists "Service"(
 create table if not exists "Staff"(
   id serial primary key,
   name text not null,
-  bio text,
   active boolean not null default true
 );
+
+create table if not exists "Slot"(
+  id serial primary key,
+  start timestamptz not null,
+  "end" timestamptz not null,
+  "staffId" int references "Staff"(id) on delete set null on update cascade,
+  "isActive" boolean not null default true
+);
+create index if not exists slot_time_idx on "Slot"(start,"end");
 
 create table if not exists "Customer"(
   id serial primary key,
@@ -26,14 +33,11 @@ create table if not exists "Customer"(
 create table if not exists "Booking"(
   id serial primary key,
   "serviceId" int not null references "Service"(id) on delete restrict on update cascade,
-  "staffId" int not null references "Staff"(id) on delete restrict on update cascade,
   "customerId" int not null references "Customer"(id) on delete restrict on update cascade,
-  "startDateTime" timestamptz not null,
-  "endDateTime" timestamptz not null,
-  status "BookingStatus" not null default 'PENDING',
+  "slotId" int not null references "Slot"(id) on delete restrict on update cascade,
+  status "Status" not null default 'PENDING',
   notes text,
   "createdAt" timestamptz not null default now(),
-  "updatedAt" timestamptz not null default now()
+  "updatedAt" timestamptz not null default now(),
+  unique("slotId")
 );
-
-create index if not exists booking_staff_time_idx on "Booking"("staffId","startDateTime","endDateTime");
